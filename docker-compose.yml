@@ -1,0 +1,64 @@
+version: '3.6'
+
+networks:
+  sample_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.1.0/24
+          gateway: 192.168.1.1
+
+services:
+  app:
+    build:
+      context: app
+      dockerfile: Dockerfile 
+    image: voyagerwy130/sample_golang:1.0
+    container_name: ${CONTAINER_NAME_APP}
+    ports: 
+      - "8080:8080"
+    tty: true 
+    restart: unless-stopped
+    environment:
+      - CONTAINER_NAME_DB
+      - PORT_DB
+      - POSTGRES_USER 
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+      - TZ
+    depends_on:
+      - db
+    networks:
+      sample_net:
+        ipv4_address: 192.168.1.21
+
+  db:
+    build:
+      context: db
+      dockerfile: Dockerfile 
+    image: voyagerwy130/sample_db:1.0
+    container_name: ${CONTAINER_NAME_DB}
+    expose: 
+      - "${PORT_DB}"
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER 
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+      - POSTGRES_HOST_AUTH_METHOD
+    volumes: 
+      - ./db/init:/docker-entrypoint-initdb.d
+      - ./db/data:/var/lib/postgresql/data
+    networks:
+      sample_net:
+        ipv4_address: 192.168.1.22
+
+  depends_resolver:
+    image: dadarek/wait-for-dependencies
+    depends_on:
+      - db
+    command: ${CONTAINER_NAME_DB}:${PORT_DB}
+    networks:
+      sample_net:
+        ipv4_address: 192.168.1.23
