@@ -1,14 +1,5 @@
 version: '3.6'
 
-networks:
-  sample_net:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 192.168.1.0/24
-          gateway: 192.168.1.1
-
 services:
   app:
     build:
@@ -29,9 +20,6 @@ services:
       - TZ
     depends_on:
       - db
-    networks:
-      sample_net:
-        ipv4_address: 192.168.1.21
 
   db:
     build:
@@ -50,15 +38,9 @@ services:
     volumes: 
       - ./db/init:/docker-entrypoint-initdb.d
       - ./db/data:/var/lib/postgresql/data
-    networks:
-      sample_net:
-        ipv4_address: 192.168.1.22
 
   depends_resolver:
     image: dadarek/wait-for-dependencies
     depends_on:
       - db
     command: ${CONTAINER_NAME_DB}:${PORT_DB}
-    networks:
-      sample_net:
-        ipv4_address: 192.168.1.23
