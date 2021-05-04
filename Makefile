@@ -31,3 +31,8 @@ in/db:
 reset/image:
 	@docker rmi voyagerwy130/sample_golang:1.0
 	@docker rmi voyagerwy130/sample_db:1.0
+
+.PHONY: reset/db
+reset/db:
+	@rm -rf db/data
+	@mkdir db/data

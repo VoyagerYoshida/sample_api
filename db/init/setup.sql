@@ -6,6 +6,6 @@ CREATE TABLE tab_comments (
     content TEXT NOT NULL
 );
 
-INSERT INTO tab_comments(name, content) VALUES('yoshida', 'Hello, World!');
-INSERT INTO tab_comments(name, content) VALUES('terauchi', 'Yahoo!!!');
-INSERT INTO tab_comments(name, content) VALUES('motoyama', 'Very Soft.');
+INSERT INTO tab_comments(name, content) VALUES('tanaka', 'Hello, World!');
+INSERT INTO tab_comments(name, content) VALUES('satou', 'Yahoo!!!');
+INSERT INTO tab_comments(name, content) VALUES('suzuki', 'Finish...');
