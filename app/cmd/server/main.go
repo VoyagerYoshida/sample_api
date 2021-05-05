@@ -31,30 +31,26 @@ func setupDB() (*gorp.DbMap, error) {
 
     dbmap := &gorp.DbMap{Db: db, Dialect: gorp.PostgresDialect{}}
     dbmap.AddTableWithName(Comment{}, "tab_comments").SetKeys(true, "Id")
-	err = dbmap.CreateTablesIfNotExists()
-	if err != nil {
-		return nil, err
-	}
+    err = dbmap.CreateTablesIfNotExists()
+    if err != nil {
+        return nil, err
+    }
 
     return dbmap, nil
 }
 
-type Error struct {
-	Error string `json:"error"`
-}
-
 type Controller struct {
-	dbmap *gorp.DbMap
+    dbmap *gorp.DbMap
 }
 
 func (controller *Controller) ListComments(c echo.Context) error {
-	var comments []Comment
-	_, err := controller.dbmap.Select(&comments, "SELECT * FROM tab_comments")
-	if err != nil {
-		c.Logger().Error("Select: ", err)
-		return c.String(http.StatusBadRequest, "Select: "+err.Error())
-	}
-	return c.JSON(http.StatusOK, comments)
+    var comments []Comment
+    _, err := controller.dbmap.Select(&comments, "SELECT * FROM tab_comments")
+    if err != nil {
+        c.Logger().Error("Select: ", err)
+        return c.String(http.StatusBadRequest, "Select: "+err.Error())
+    }
+    return c.JSON(http.StatusOK, comments)
 }
 
 func main() {
@@ -73,7 +69,7 @@ func main() {
     e.GET("/", func(c echo.Context) error {
         return c.JSON(http.StatusOK, map[string]string{"hello": "world"})
     })
-	e.GET("/api/comments", controller.ListComments)
+    e.GET("/api/comments", controller.ListComments)
 
     e.Logger.Fatal(e.Start(":8080"))
 }
